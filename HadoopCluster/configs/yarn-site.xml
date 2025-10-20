@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- ResourceManager hostname -->
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>resourcemanager</value>
+        <description>ResourceManager hostname</description>
+    </property>
+    
+    <!-- ResourceManager address -->
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>resourcemanager:8032</value>
+        <description>ResourceManager RPC address</description>
+    </property>
+    
+    <!-- ResourceManager scheduler address -->
+    <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>resourcemanager:8030</value>
+        <description>ResourceManager scheduler RPC address</description>
+    </property>
+    
+    <!-- ResourceManager web interface -->
+    <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>resourcemanager:8088</value>
+        <description>ResourceManager web interface address</description>
+    </property>
+    
+    <!-- ResourceManager resource tracker -->
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>resourcemanager:8031</value>
+        <description>ResourceManager resource tracker address</description>
+    </property>
+    
+    <!-- NodeManager auxiliary services -->
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+        <description>Auxiliary services for MapReduce</description>
+    </property>
+    
+    <!-- NodeManager auxiliary services class -->
+    <property>
+        <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+    
+    <!-- NodeManager web interface -->
+    <property>
+        <name>yarn.nodemanager.webapp.address</name>
+        <value>0.0.0.0:8042</value>
+        <description>NodeManager web interface address</description>
+    </property>
+    
+    <!-- NodeManager local directories -->
+    <property>
+        <name>yarn.nodemanager.local-dirs</name>
+        <value>/opt/hadoop/yarn/local</value>
+        <description>Local directories for NodeManager</description>
+    </property>
+    
+    <!-- NodeManager log directories -->
+    <property>
+        <name>yarn.nodemanager.log-dirs</name>
+        <value>/opt/hadoop/yarn/logs</value>
+        <description>Log directories for NodeManager</description>
+    </property>
+    
+    <!-- Memory allocation for containers -->
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>4096</value>
+        <description>Memory available for containers (4GB)</description>
+    </property>
+    
+    <!-- Virtual cores for containers -->
+    <property>
+        <name>yarn.nodemanager.resource.cpu-vcores</name>
+        <value>4</value>
+        <description>Virtual cores available for containers</description>
+    </property>
+    
+    <!-- Scheduler type -->
+    <property>
+        <name>yarn.resourcemanager.scheduler.class</name>
+        <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+        <description>Scheduler implementation</description>
+    </property>
+    
+    <!-- Application master memory -->
+    <property>
+        <name>yarn.app.mapreduce.am.resource.mb</name>
+        <value>1024</value>
+        <description>Memory for Application Master</description>
+    </property>
+    
+    <!-- Container minimum memory -->
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>256</value>
+        <description>Minimum memory allocation for containers</description>
+    </property>
+    
+    <!-- Container maximum memory -->
+    <property>
+        <name>yarn.scheduler.maximum-allocation-mb</name>
+        <value>2048</value>
+        <description>Maximum memory allocation for containers</description>
+    </property>
+    
+    <!-- Enable log aggregation -->
+    <property>
+        <name>yarn.log-aggregation-enable</name>
+        <value>true</value>
+        <description>Enable log aggregation</description>
+    </property>
+    
+    <!-- Log aggregation directory -->
+    <property>
+        <name>yarn.nodemanager.remote-app-log-dir</name>
+        <value>/tmp/logs</value>
+        <description>Remote directory for log aggregation</description>
+    </property>
+    
+    <!-- NodeManager disk health checker -->
+    <property>
+        <name>yarn.nodemanager.disk-health-checker.enable</name>
+        <value>true</value>
+        <description>Enable disk health checker</description>
+    </property>
+    
+    <!-- Network topology awareness -->
+    <property>
+        <name>yarn.resourcemanager.nodes.include-path</name>
+        <value>/opt/hadoop/etc/hadoop/includes</value>
+        <description>Include file for allowed nodes</description>
+    </property>
+</configuration>

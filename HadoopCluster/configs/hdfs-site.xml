@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- NameNode directories -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/opt/hadoop/hdfs/namenode</value>
+        <description>Directory for NameNode metadata storage</description>
+    </property>
+    
+    <!-- DataNode directories -->
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/opt/hadoop/hdfs/datanode</value>
+        <description>Directory for DataNode block storage</description>
+    </property>
+    
+    <!-- Replication factor -->
+    <property>
+        <name>dfs.replication</name>
+        <value>3</value>
+        <description>Default block replication factor</description>
+    </property>
+    
+    <!-- Block size -->
+    <property>
+        <name>dfs.blocksize</name>
+        <value>134217728</value>
+        <description>HDFS block size (128MB)</description>
+    </property>
+    
+    <!-- NameNode HTTP address -->
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>namenode:9870</value>
+        <description>NameNode web interface address</description>
+    </property>
+    
+    <!-- Secondary NameNode HTTP address -->
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>secondarynamenode:9868</value>
+        <description>Secondary NameNode web interface address</description>
+    </property>
+    
+    <!-- DataNode HTTP address -->
+    <property>
+        <name>dfs.datanode.http.address</name>
+        <value>0.0.0.0:9864</value>
+        <description>DataNode web interface address</description>
+    </property>
+    
+    <!-- Enable permissions -->
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>true</value>
+        <description>Enable HDFS permissions</description>
+    </property>
+    
+    <!-- WebHDFS enabled -->
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+        <description>Enable WebHDFS REST API</description>
+    </property>
+    
+    <!-- Rack awareness -->
+    <property>
+        <name>dfs.namenode.rack.aware</name>
+        <value>true</value>
+        <description>Enable rack awareness for replica placement</description>
+    </property>
+    
+    <!-- Network topology for fault tolerance -->
+    <property>
+        <name>dfs.namenode.replication.considerLoad</name>
+        <value>true</value>
+        <description>Consider DataNode load when placing replicas</description>
+    </property>
+    
+    <!-- Checkpoint configuration -->
+    <property>
+        <name>dfs.namenode.checkpoint.period</name>
+        <value>3600</value>
+        <description>Checkpoint interval in seconds (1 hour)</description>
+    </property>
+    
+    <!-- Heartbeat interval -->
+    <property>
+        <name>dfs.heartbeat.interval</name>
+        <value>3</value>
+        <description>DataNode heartbeat interval in seconds</description>
+    </property>
+    
+    <!-- DataNode handler threads -->
+    <property>
+        <name>dfs.datanode.handler.count</name>
+        <value>10</value>
+        <description>Number of DataNode handler threads</description>
+    </property>
+</configuration>

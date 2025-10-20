@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Knapsack Applications Demo</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; line-height: 1.35; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 28px; }
+    details { margin: 12px 0 20px; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; }
+    summary { font-weight: 600; cursor: pointer; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, select, button { padding: 6px 8px; font-size: 14px; }
+    button { cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+    th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+    th { background: #f8f8f8; }
+    .muted { color: #666; font-size: 12px; }
+    .results { background: #fbfbfb; border: 1px solid #eee; padding: 10px; border-radius: 6px; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eef3ff; color: #1a49a2; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Knapsack Algorithms – Real‑World Applications</h1>
+  <p class="muted">Interactive, no build step. Open this file in a browser and try the examples.</p>
+
+  <details open>
+    <summary>Resource Allocation (0/1 Knapsack) – Select Projects within a Budget</summary>
+    <div class="row">
+      <label>Budget:
+        <input id="proj-budget" type="number" min="0" step="1" value="15" />
+      </label>
+      <button id="proj-add">Add Project</button>
+      <button id="proj-solve">Solve</button>
+      <span class="pill">0/1</span>
+    </div>
+    <table id="proj-table">
+      <thead>
+        <tr><th>Name</th><th>Cost (int)</th><th>Benefit (value)</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="proj-results" class="results"></div>
+  </details>
+
+  <details>
+    <summary>Portfolio Optimization – Maximize Return under Capital</summary>
+    <div class="row">
+      <label>Capital:
+        <input id="port-capital" type="number" min="0" step="0.01" value="120" />
+      </label>
+      <label>Mode:
+        <select id="port-mode">
+          <option value="fractional">Fractional (Greedy)</option>
+          <option value="01">0/1 (Whole Units)</option>
+        </select>
+      </label>
+      <button id="port-add">Add Asset</button>
+      <button id="port-solve">Solve</button>
+      <span class="pill">Fractional / 0/1</span>
+    </div>
+    <table id="port-table">
+      <thead>
+        <tr><th>Name</th><th>Price</th><th>Expected Return</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="port-results" class="results"></div>
+  </details>
+
+  <details>
+    <summary>Scheduling (0/1 Knapsack) – Maximize Reward within Time Limit</summary>
+    <div class="row">
+      <label>Time Limit:
+        <input id="sched-limit" type="number" min="0" step="1" value="10" />
+      </label>
+      <button id="sched-add">Add Task</button>
+      <button id="sched-solve">Solve</button>
+      <span class="pill">0/1</span>
+    </div>
+    <table id="sched-table">
+      <thead>
+        <tr><th>Name</th><th>Duration (int)</th><th>Reward (value)</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="sched-results" class="results"></div>
+  </details>
+
+  <script>
+    // ---------- Core algorithms ----------
+    function knapsack01(values, weights, capacity) {
+      const n = values.length;
+      const dp = Array.from({ length: n + 1 }, () => Array(capacity + 1).fill(0));
+      for (let i = 1; i <= n; i++) {
+        const w = weights[i - 1];
+        const v = values[i - 1];
+        for (let c = 0; c <= capacity; c++) {
+          dp[i][c] = dp[i - 1][c];
+          if (w <= c) dp[i][c] = Math.max(dp[i][c], dp[i - 1][c - w] + v);
+        }
+      }
+      // reconstruct
+      const picked = [];
+      let c = capacity;
+      for (let i = n; i > 0; i--) {
+        if (dp[i][c] !== dp[i - 1][c]) { picked.push(i - 1); c -= weights[i - 1]; }
+      }
+      picked.reverse();
+      return { maxValue: dp[n][capacity], pickedIndices: picked };
+    }
+
+    function fractionalKnapsack(values, weights, capacity) {
+      const items = values.map((v, i) => ({ i, ratio: weights[i] > 0 ? v / weights[i] : Infinity }))
+                          .sort((a, b) => b.ratio - a.ratio);
+      let total = 0;
+      const taken = [];
+      let remaining = capacity;
+      for (const it of items) {
+        if (remaining <= 0) break;
+        const w = weights[it.i];
+        const v = values[it.i];
+        if (w <= 0) continue;
+        const frac = Math.min(1, remaining / w);
+        total += v * frac;
+        remaining -= w * frac;
+        taken.push({ index: it.i, fraction: frac });
+      }
+      return { totalValue: total, taken };
+    }
+
+    // ---------- Helpers for tables ----------
+    function addRow(tbody, cols) {
+      const tr = document.createElement('tr');
+      for (const { placeholder, type = 'text', step = 'any', value = '' } of cols) {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = type; input.placeholder = placeholder; input.step = step; input.value = value;
+        td.appendChild(input); tr.appendChild(td);
+      }
+      const tdAct = document.createElement('td');
+      const btn = document.createElement('button');
+      btn.textContent = 'Remove';
+      btn.onclick = () => tr.remove();
+      tdAct.appendChild(btn); tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    }
+
+    function readTableNumeric(tbody, nameIdx, weightIdx, valueIdx) {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const names = [], weights = [], values = [];
+      for (const r of rows) {
+        const cells = r.querySelectorAll('td > input');
+        const name = cells[nameIdx].value.trim() || `Item ${names.length + 1}`;
+        const w = Number(cells[weightIdx].value);
+        const v = Number(cells[valueIdx].value);
+        if (!Number.isFinite(w) || !Number.isFinite(v)) continue;
+        names.push(name); weights.push(w); values.push(v);
+      }
+      return { names, weights, values };
+    }
+
+    function renderList(container, title, entries) {
+      container.innerHTML = `<div><strong>${title}</strong></div>` +
+        '<ul>' + entries.map(e => `<li>${e}</li>`).join('') + '</ul>';
+    }
+
+    // ---------- Resource Allocation UI ----------
+    const projBody = document.querySelector('#proj-table tbody');
+    const projAdd = document.getElementById('proj-add');
+    const projSolve = document.getElementById('proj-solve');
+    const projBudget = document.getElementById('proj-budget');
+    const projResults = document.getElementById('proj-results');
+
+    function seedProjects() {
+      const samples = [
+        { n: 'CRM Upgrade', c: 7, b: 16 },
+        { n: 'Mobile App', c: 5, b: 10 },
+        { n: 'Data Lake', c: 8, b: 12 },
+        { n: 'Security Audit', c: 3, b: 6 },
+        { n: 'A/B Testing', c: 4, b: 7 },
+      ];
+      for (const s of samples) addRow(projBody, [
+        { placeholder: 'Name', value: s.n },
+        { placeholder: 'Cost', type: 'number', step: '1', value: String(s.c) },
+        { placeholder: 'Benefit', type: 'number', step: '0.01', value: String(s.b) },
+      ]);
+    }
+
+    projAdd.onclick = () => addRow(projBody, [
+      { placeholder: 'Name' },
+      { placeholder: 'Cost', type: 'number', step: '1' },
+      { placeholder: 'Benefit', type: 'number', step: '0.01' },
+    ]);
+
+    projSolve.onclick = () => {
+      const budget = Math.max(0, Math.floor(Number(projBudget.value) || 0));
+      const { names, weights: costs, values: benefits } = readTableNumeric(projBody, 0, 1, 2);
+      const { maxValue, pickedIndices } = knapsack01(benefits, costs, budget);
+      const chosen = pickedIndices.map(i => ({ name: names[i], cost: costs[i], benefit: benefits[i] }));
+      const used = chosen.reduce((s, x) => s + x.cost, 0);
+      projResults.innerHTML = '' +
+        `<div><strong>Max Benefit:</strong> ${maxValue.toFixed(2)}</div>` +
+        `<div><strong>Used Budget:</strong> ${used} / ${budget}</div>` +
+        '<div><strong>Chosen Projects:</strong></div>' +
+        '<ul>' + chosen.map(c => `<li>${c.name} — cost ${c.cost}, benefit ${c.benefit}</li>`).join('') + '</ul>';
+    };
+
+    seedProjects();
+
+    // ---------- Portfolio UI ----------
+    const portBody = document.querySelector('#port-table tbody');
+    const portAdd = document.getElementById('port-add');
+    const portSolve = document.getElementById('port-solve');
+    const portCapital = document.getElementById('port-capital');
+    const portMode = document.getElementById('port-mode');
+    const portResults = document.getElementById('port-results');
+
+    function seedAssets() {
+      const samples = [
+        { n: 'ETF_A', p: 50.0, r: 5.5 },
+        { n: 'ETF_B', p: 40.0, r: 4.0 },
+        { n: 'Bond_Fund', p: 30.0, r: 2.7 },
+        { n: 'Growth_Fund', p: 70.0, r: 7.5 },
+      ];
+      for (const s of samples) addRow(portBody, [
+        { placeholder: 'Name', value: s.n },
+        { placeholder: 'Price', type: 'number', step: '0.01', value: String(s.p) },
+        { placeholder: 'Expected Return', type: 'number', step: '0.01', value: String(s.r) },
+      ]);
+    }
+
+    portAdd.onclick = () => addRow(portBody, [
+      { placeholder: 'Name' },
+      { placeholder: 'Price', type: 'number', step: '0.01' },
+      { placeholder: 'Expected Return', type: 'number', step: '0.01' },
+    ]);
+
+    portSolve.onclick = () => {
+      const capital = Math.max(0, Number(portCapital.value) || 0);
+      const { names, weights: prices, values: returns } = readTableNumeric(portBody, 0, 1, 2);
+      const mode = portMode.value;
+      if (mode === 'fractional') {
+        const { totalValue, taken } = fractionalKnapsack(returns, prices, capital);
+        let used = 0;
+        const positions = taken.map(t => {
+          const name = names[t.index];
+          const cap = prices[t.index] * t.fraction;
+          const contrib = returns[t.index] * t.fraction;
+          used += cap;
+          return { name, fraction: t.fraction, capital: cap, contribution: contrib };
+        });
+        portResults.innerHTML = '' +
+          `<div><strong>Total Expected Return:</strong> ${totalValue.toFixed(2)}</div>` +
+          `<div><strong>Capital Used:</strong> ${used.toFixed(2)} / ${capital.toFixed(2)}</div>` +
+          '<div><strong>Positions:</strong></div>' +
+          '<ul>' + positions.map(p => `<li>${p.name} — ${p.fraction.toFixed(2)} units, capital ${p.capital.toFixed(2)}, contribution ${p.contribution.toFixed(2)}</li>`).join('') + '</ul>';
+      } else {
+        const factor = 100; // scale to cents
+        const intPrices = prices.map(p => Math.max(0, Math.round(p * factor)));
+        const intBudget = Math.max(0, Math.round(capital * factor));
+        const { maxValue, pickedIndices } = knapsack01(returns, intPrices, intBudget);
+        const chosen = pickedIndices.map(i => ({ name: names[i], price: prices[i], ret: returns[i] }));
+        const used = chosen.reduce((s, x) => s + x.price, 0);
+        portResults.innerHTML = '' +
+          `<div><strong>Total Expected Return:</strong> ${maxValue.toFixed(2)}</div>` +
+          `<div><strong>Capital Used:</strong> ${used.toFixed(2)} / ${capital.toFixed(2)}</div>` +
+          '<div><strong>Positions:</strong></div>' +
+          '<ul>' + chosen.map(p => `<li>${p.name} — 1 unit, price ${p.price.toFixed(2)}, return ${p.ret.toFixed(2)}</li>`).join('') + '</ul>';
+      }
+    };
+
+    seedAssets();
+
+    // ---------- Scheduling UI ----------
+    const schedBody = document.querySelector('#sched-table tbody');
+    const schedAdd = document.getElementById('sched-add');
+    const schedSolve = document.getElementById('sched-solve');
+    const schedLimit = document.getElementById('sched-limit');
+    const schedResults = document.getElementById('sched-results');
+
+    function seedTasks() {
+      const samples = [
+        { n: 'Write Report', d: 4, r: 6.0 },
+        { n: 'Implement Feature', d: 7, r: 15.0 },
+        { n: 'Fix Bugs', d: 3, r: 9.0 },
+        { n: 'Team Training', d: 6, r: 10.0 },
+        { n: 'Client Meeting', d: 2, r: 4.0 },
+      ];
+      for (const s of samples) addRow(schedBody, [
+        { placeholder: 'Name', value: s.n },
+        { placeholder: 'Duration', type: 'number', step: '1', value: String(s.d) },
+        { placeholder: 'Reward', type: 'number', step: '0.01', value: String(s.r) },
+      ]);
+    }
+
+    schedAdd.onclick = () => addRow(schedBody, [
+      { placeholder: 'Name' },
+      { placeholder: 'Duration', type: 'number', step: '1' },
+      { placeholder: 'Reward', type: 'number', step: '0.01' },
+    ]);
+
+    schedSolve.onclick = () => {
+      const limit = Math.max(0, Math.floor(Number(schedLimit.value) || 0));
+      const { names, weights: durations, values: rewards } = readTableNumeric(schedBody, 0, 1, 2);
+      const { maxValue, pickedIndices } = knapsack01(rewards, durations, limit);
+      const chosen = pickedIndices.map(i => ({ name: names[i], duration: durations[i], reward: rewards[i] }));
+      const used = chosen.reduce((s, x) => s + x.duration, 0);
+      schedResults.innerHTML = '' +
+        `<div><strong>Max Reward:</strong> ${maxValue.toFixed(2)}</div>` +
+        `<div><strong>Time Used:</strong> ${used} / ${limit}</div>` +
+        '<div><strong>Chosen Tasks:</strong></div>' +
+        '<ul>' + chosen.map(t => `<li>${t.name} — duration ${t.duration}, reward ${t.reward}</li>`).join('') + '</ul>';
+    };
+
+    seedTasks();
+  </script>
+</body>
+</html>

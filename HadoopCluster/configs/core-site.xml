@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- NameNode URI -->
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://namenode:9000</value>
+        <description>The default file system URI</description>
+    </property>
+    
+    <!-- Hadoop temporary directory -->
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/hadoop/tmp</value>
+        <description>Temporary directory for Hadoop</description>
+    </property>
+    
+    <!-- Buffer size for I/O operations -->
+    <property>
+        <name>io.file.buffer.size</name>
+        <value>131072</value>
+        <description>Buffer size for I/O operations (128KB)</description>
+    </property>
+    
+    <!-- Proxy user settings -->
+    <property>
+        <name>hadoop.proxyuser.hadoop.hosts</name>
+        <value>*</value>
+    </property>
+    
+    <property>
+        <name>hadoop.proxyuser.hadoop.groups</name>
+        <value>*</value>
+    </property>
+    
+    <!-- Network topology script for rack awareness -->
+    <property>
+        <name>net.topology.script.file.name</name>
+        <value>/opt/hadoop/etc/hadoop/topology.sh</value>
+        <description>Script for network topology mapping</description>
+    </property>
+    
+    <!-- Security settings -->
+    <property>
+        <name>hadoop.security.authentication</name>
+        <value>simple</value>
+        <description>Authentication method (simple or kerberos)</description>
+    </property>
+</configuration>

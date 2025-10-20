@@ -1,0 +1,11 @@
+# Hadoop cluster worker nodes (DataNodes)
+# Each line represents a DataNode hostname or IP address
+
+# DataNode 1 - Network segment 192.168.2.x
+datanode1
+
+# DataNode 2 - Network segment 192.168.3.x  
+datanode2
+
+# DataNode 3 - Network segment 192.168.4.x
+datanode3
