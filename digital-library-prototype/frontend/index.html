@@ -1,0 +1,167 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Library Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1020;--card:#121a32;--muted:#6b7280;--text:#e5e7eb;--acc:#8b5cf6;}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1020,#0e1730);color:var(--text)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .header{display:flex;align-items:center;gap:16px}
+    .badge{font-size:12px;background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.4);padding:4px 8px;border-radius:999px}
+    .search{margin-top:16px;display:grid;grid-template-columns:1fr 160px 140px;gap:10px}
+    input,select,button{padding:12px 14px;border-radius:12px;border:1px solid #253055;background:#0f172a;color:var(--text);outline:none}
+    button{cursor:pointer;background:linear-gradient(180deg,#1e293b,#111827);border:1px solid #243045}
+    button.primary{background:linear-gradient(180deg,#6d28d9,#4c1d95);border:none}
+    .grid{display:grid;grid-template-columns:240px 1fr;gap:16px;margin-top:16px}
+    .card{background:var(--card);border:1px solid #253055;border-radius:16px;padding:16px}
+    .facet label{display:block;margin-bottom:8px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .facet .row{display:flex;gap:8px;margin-bottom:8px}
+    .result{display:grid;grid-template-columns:1fr 120px;gap:8px;padding:12px;border:1px solid #253055;border-radius:12px;margin-bottom:10px;background:#0f172a}
+    .result h4{margin:0 0 4px 0}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:2px 8px;border:1px solid #334155;border-radius:999px;margin-right:6px;font-size:12px}
+    .footer{opacity:.7;font-size:12px;margin-top:12px}
+    .count{font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h2 style="margin:0">📚 Digital Library</h2>
+      <span class="badge">Prototype</span>
+    </div>
+
+    <div class="search">
+      <input id="q" placeholder="Search by keyword, title, author, ISBN. For boolean: hdfs AND (mapreduce OR replication) NOT video">
+      <select id="mode">
+        <option value="keyword">Keyword</option>
+        <option value="boolean">Boolean</option>
+        <option value="fuzzy">Fuzzy</option>
+      </select>
+      <button id="go" class="primary">Search</button>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="facet">
+          <label>Filters</label>
+          <div class="row">
+            <select id="domain">
+              <option value="">Domain (any)</option>
+              <option>Computer Science</option>
+              <option>Big Data</option>
+              <option>Search</option>
+              <option>AI</option>
+              <option>Databases</option>
+            </select>
+          </div>
+          <div class="row">
+            <select id="type">
+              <option value="">Type (any)</option>
+              <option>book</option>
+              <option>presentation</option>
+              <option>video</option>
+            </select>
+          </div>
+          <div class="row">
+            <input id="author" placeholder="Author contains">
+          </div>
+          <div class="row">
+            <input id="isbn" placeholder="ISBN exact">
+          </div>
+          <div class="row">
+            <input id="year_min" placeholder="Year min" type="number">
+            <input id="year_max" placeholder="Year max" type="number">
+          </div>
+          <button id="clear">Clear Filters</button>
+        </div>
+        <div class="footer">Tip: Try queries like <em>hdfs</em>, <em>Tanennbaum</em> (fuzzy), or boolean: <em>"hdfs AND (mapreduce OR replication) NOT video"</em></div>
+      </div>
+
+      <div class="card">
+        <div id="summary" class="muted">Ready.</div>
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = (path)=> `http://localhost:8000${path}`;
+
+    function getFilters(){
+      return {
+        domain: document.getElementById('domain').value,
+        type: document.getElementById('type').value,
+        author: document.getElementById('author').value,
+        isbn: document.getElementById('isbn').value,
+        year_min: document.getElementById('year_min').value,
+        year_max: document.getElementById('year_max').value,
+      };
+    }
+
+    async function search(){
+      const q = document.getElementById('q').value;
+      const mode = document.getElementById('mode').value;
+      const filters = getFilters();
+      const res = await fetch(API('/api/search'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ q, mode, filters })
+      });
+      const data = await res.json();
+      renderResults(data, q, mode);
+    }
+
+    function pill(text){ return `<span class="pill">${text}</span>` }
+
+    function renderResults(data, q, mode){
+      const sum = document.getElementById('summary');
+      sum.innerHTML = `<span class="count">${data.count}</span> result(s) — mode: <strong>${mode}</strong>`;
+      const box = document.getElementById('results');
+      box.innerHTML = '';
+      data.results.forEach(it => {
+        const meta = [it.author || '—', it.domain || '—', it.year || '—', it.type || '—'].join(" · ");
+        const kws = (it.keywords || []).map(k => pill(k)).join('');
+        const urlBtn = it.url ? `<a href="${it.url}" target="_blank"><button>Open</button></a>` : '';
+        box.insertAdjacentHTML('beforeend', `
+          <div class="result">
+            <div>
+              <h4>${it.title}</h4>
+              <div class="muted">${meta}</div>
+              <div style="margin-top:6px">${kws}</div>
+              <div style="margin-top:8px;font-size:14px">${it.abstract}</div>
+              ${it.isbn ? `<div class="muted" style="margin-top:6px">ISBN: ${it.isbn}</div>` : ''}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+              ${urlBtn}
+              <button onclick="prefill('${(it.author||'').replace(/'/g, "\\'")}')">Filter by author</button>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function prefill(author){
+      document.getElementById('author').value = author;
+      search();
+    }
+
+    document.getElementById('go').addEventListener('click', search);
+    document.getElementById('clear').addEventListener('click', ()=>{
+      ['domain','type','author','isbn','year_min','year_max'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('q').value='';
+      document.getElementById('mode').value='keyword';
+      search();
+    });
+
+    // Initial search
+    search();
+  </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+[
+  {
+    "id": "bk-001",
+    "title": "Distributed Systems: Principles and Paradigms",
+    "author": "Andrew S. Tanenbaum",
+    "isbn": "9780132392273",
+    "domain": "Computer Science",
+    "type": "book",
+    "year": 2007,
+    "abstract": "Foundational concepts in distributed systems including communication, naming, synchronization, consistency and replication.",
+    "keywords": [
+      "distributed systems",
+      "replication",
+      "consistency"
+    ],
+    "url": ""
+  },
+  {
+    "id": "ppt-101",
+    "title": "MapReduce and HDFS Basics",
+    "author": "Gayatri Chavan",
+    "isbn": "",
+    "domain": "Big Data",
+    "type": "presentation",
+    "year": 2024,
+    "abstract": "Introductory slides explaining HDFS architecture and MapReduce workflow with examples.",
+    "keywords": [
+      "hadoop",
+      "hdfs",
+      "mapreduce"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-002",
+    "title": "Elasticsearch: The Definitive Guide",
+    "author": "Clinton Gormley; Zachary Tong",
+    "isbn": "9781449358549",
+    "domain": "Search",
+    "type": "book",
+    "year": 2015,
+    "abstract": "Comprehensive guide to building search applications using Elasticsearch, including indexing, analyzers, and queries.",
+    "keywords": [
+      "elasticsearch",
+      "search",
+      "indexing"
+    ],
+    "url": ""
+  },
+  {
+    "id": "vid-900",
+    "title": "Semantic Search with BERT",
+    "author": "DeepLearn Lab",
+    "isbn": "",
+    "domain": "AI",
+    "type": "video",
+    "year": 2023,
+    "abstract": "Video lecture introducing embeddings and semantic retrieval with transformer models.",
+    "keywords": [
+      "bert",
+      "embeddings",
+      "semantic search"
+    ],
+    "url": "https://example.com/videos/semantic-search"
+  },
+  {
+    "id": "bk-003",
+    "title": "NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence",
+    "author": "Pramod J. Sadalage; Martin Fowler",
+    "isbn": "9780321826626",
+    "domain": "Databases",
+    "type": "book",
+    "year": 2012,
+    "abstract": "Short guide to NoSQL databases, CAP theorem, and data modeling across document, key-value, column-family, and graph stores.",
+    "keywords": [
+      "nosql",
+      "cap",
+      "data modeling"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-004",
+    "title": "Designing Data-Intensive Applications",
+    "author": "Martin Kleppmann",
+    "isbn": "9781449373320",
+    "domain": "Databases",
+    "type": "book",
+    "year": 2017,
+    "abstract": "Architectural patterns for reliable, scalable, and maintainable data systems; storage, stream processing, and distributed consistency.",
+    "keywords": [
+      "data-intensive",
+      "streaming",
+      "consistency"
+    ],
+    "url": ""
+  },
+  {
+    "id": "ppt-102",
+    "title": "Hadoop Ecosystem: Hive and Spark",
+    "author": "Ananya Patil",
+    "isbn": "",
+    "domain": "Big Data",
+    "type": "presentation",
+    "year": 2023,
+    "abstract": "Overview of Hive SQL on HDFS and Apache Spark for ETL and analytics; includes demos and best practices.",
+    "keywords": [
+      "hadoop",
+      "hive",
+      "spark"
+    ],
+    "url": ""
+  },
+  {
+    "id": "vid-901",
+    "title": "Introduction to Apache Spark",
+    "author": "DataAcademy",
+    "isbn": "",
+    "domain": "Big Data",
+    "type": "video",
+    "year": 2022,
+    "abstract": "Video tutorial on Spark RDDs, DataFrames, transformations and actions with performance tips.",
+    "keywords": [
+      "spark",
+      "rdd",
+      "dataframe"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-005",
+    "title": "Mining of Massive Datasets",
+    "author": "Jure Leskovec; Anand Rajaraman; Jeffrey Ullman",
+    "isbn": "9781107077232",
+    "domain": "Big Data",
+    "type": "book",
+    "year": 2014,
+    "abstract": "Algorithms for analyzing large datasets including link analysis, clustering, frequent itemsets, and recommendation.",
+    "keywords": [
+      "mining",
+      "clustering",
+      "recommendation"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-006",
+    "title": "Introduction to Information Retrieval",
+    "author": "Christopher D. Manning; Prabhakar Raghavan; Hinrich Schütze",
+    "isbn": "9780521865715",
+    "domain": "Search",
+    "type": "book",
+    "year": 2008,
+    "abstract": "Core IR concepts including indexing, vector space model, evaluation, web search, and machine learning for IR.",
+    "keywords": [
+      "information retrieval",
+      "indexing",
+      "ir"
+    ],
+    "url": ""
+  },
+  {
+    "id": "ppt-103",
+    "title": "Elasticsearch Query DSL Deep Dive",
+    "author": "Sahil Kulkarni",
+    "isbn": "",
+    "domain": "Search",
+    "type": "presentation",
+    "year": 2021,
+    "abstract": "Scoring, analyzers, bool queries, aggregations, and pagination with examples in the ES Query DSL.",
+    "keywords": [
+      "elasticsearch",
+      "query dsl",
+      "aggregations"
+    ],
+    "url": ""
+  },
+  {
+    "id": "vid-902",
+    "title": "BERT Fine-tuning for Semantic Search",
+    "author": "DeepLearn Lab",
+    "isbn": "",
+    "domain": "AI",
+    "type": "video",
+    "year": 2023,
+    "abstract": "Practical guide to fine-tuning transformers for retrieval; building embeddings and ANN indexes.",
+    "keywords": [
+      "bert",
+      "semantic",
+      "embeddings"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-007",
+    "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
+    "author": "Aurélien Géron",
+    "isbn": "9781492032649",
+    "domain": "AI",
+    "type": "book",
+    "year": 2019,
+    "abstract": "End-to-end ML workflows, feature engineering, neural networks, and production tips using Python libraries.",
+    "keywords": [
+      "machine learning",
+      "tensorflow",
+      "keras"
+    ],
+    "url": ""
+  },
+  {
+    "id": "ppt-104",
+    "title": "Consistency Models and CAP Theorem",
+    "author": "Rohit Deshmukh",
+    "isbn": "",
+    "domain": "Databases",
+    "type": "presentation",
+    "year": 2020,
+    "abstract": "Explains strong vs eventual consistency, partition tolerance, and trade-offs in distributed databases.",
+    "keywords": [
+      "consistency",
+      "cap",
+      "distributed"
+    ],
+    "url": ""
+  },
+  {
+    "id": "bk-008",
+    "title": "Distributed Systems: Concepts and Design",
+    "author": "George Coulouris; Jean Dollimore; Tim Kindberg; Gordon Blair",
+    "isbn": "9780132143011",
+    "domain": "Computer Science",
+    "type": "book",
+    "year": 2011,
+    "abstract": "Comprehensive coverage of distributed system architectures, processes, communication, naming, and security.",
+    "keywords": [
+      "distributed systems",
+      "naming",
+      "security"
+    ],
+    "url": ""
+  }
+]
